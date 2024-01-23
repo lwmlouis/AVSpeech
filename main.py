@@ -22,7 +22,15 @@ parser.add_argument('--fps', default=25.0, type=float)
 args = parser.parse_args()
 
 all_csv = sorted(glob.glob(os.path.join(args.csv_dir, '*.csv')))
+'''这段代码是用来找到指定目录下的所有CSV文件，并按照文件名排序的。它使用了`glob`模块和`os`模块，具体解释如下：
 
+- `glob.glob(pattern)`是一个函数，它返回一个列表，包含了所有符合`pattern`参数的文件路径。`pattern`参数是一个字符串，可以使用通配符`*`和`?`来匹配任意字符或单个字符。例如，`*.csv`表示匹配所有以`.csv`结尾的文件。
+- `os.path.join(path, *paths)`是一个函数，它返回一个字符串，表示将多个路径拼接在一起。它会根据操作系统的不同，自动添加合适的分隔符。例如，`os.path.join('a', 'b', 'c')`在Windows系统下返回`'a\\b\\c'`，在Linux系统下返回`'a/b/c'`。
+- `args.csv_dir`是一个变量，它的值是一个字符串，表示CSV文件所在的目录。它是通过`argparse`模块从命令行参数获取的。
+- `sorted(iterable)`是一个函数，它返回一个列表，表示将`iterable`参数中的元素按照一定的顺序排序。`iterable`参数可以是任何可迭代的对象，如列表，元组，字符串等。如果没有指定排序的规则，它会按照默认的升序排序。例如，`sorted([3, 1, 4, 2])`返回`[1, 2, 3, 4]`。
+
+综上，这段代码的作用是，首先使用`os.path.join(args.csv_dir, '*.csv')`构造一个字符串，表示匹配`args.csv_dir`目录下的所有CSV文件。然后使用`glob.glob`函数根据这个字符串，找到所有符合条件的文件路径，并返回一个列表。最后使用`sorted`函数对这个列表进行排序，并赋值给`all_csv`变量。
+'''
 cut_video_dir = os.path.join(args.result_dir, 'original', 'video_cut')
 full_video_dir = os.path.join(args.result_dir, 'original', 'video_full')
 cut_audio_dir = os.path.join(args.result_dir, 'original', 'audio_cut')
@@ -65,6 +73,15 @@ print('Sorting..')
 zipped = zip(all_id, all_start, all_end, all_x, all_y)
 zipped = sorted(zipped)
 all_id, all_start, all_end, all_x, all_y = zip(*zipped)
+
+'''这段代码是用来将几个列表（all_id, all_start, all_end, all_x, all_y）按照相同的顺序排序的。它使用了`zip`和`sorted`两个内置函数，具体解释如下：
+
+- `zip(*iterables)`是一个函数，它接受任意个可迭代对象（如列表，元组，字符串等）作为参数，返回一个迭代器，每次生成一个元组，包含每个可迭代对象的对应位置的元素。例如，`zip([1, 2, 3], ['a', 'b', 'c'])`返回一个迭代器，每次生成`(1, 'a')`，`(2, 'b')`，`(3, 'c')`。
+- `sorted(iterable)`是一个函数，它接受一个可迭代对象作为参数，返回一个列表，表示将可迭代对象中的元素按照一定的顺序排序。如果没有指定排序的规则，它会按照默认的升序排序。例如，`sorted([3, 1, 4, 2])`返回`[1, 2, 3, 4]`。
+
+综上，这段代码的作用是，首先使用`zip(all_id, all_start, all_end, all_x, all_y)`将五个列表打包成一个迭代器，每次生成一个包含五个元素的元组。然后使用`sorted(zipped)`对这个迭代器进行排序，根据每个元组的第一个元素（即all_id中的元素）进行升序排序。最后使用`zip(*zipped)`将排序后的迭代器拆分成五个列表，并赋值给`all_id, all_start, all_end, all_x, all_y`变量。👍
+
+'''
 
 # Check already processed number of data
 cnt_path = os.path.join(dummy_dir, 'processed_cnt.txt')
