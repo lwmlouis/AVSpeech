@@ -5,3 +5,5 @@ librosa~=0.10.1
 dlib~=19.24.2
 imutils~=0.5.4
 scipy~=1.11.4
+cmake
+face_recognition
