@@ -9,7 +9,7 @@ detector = dlib.get_frontal_face_detector()
 
 
 #使用dlib.shape_predictor()创建一个人脸关键点预测器，用于在人脸上标记出68个特征点，如眼睛，鼻子，嘴巴等。
-landmark_predictor = dlib.shape_predictor('pip./models/shape_predictor_68_face_landmarks.dat')
+landmark_predictor = dlib.shape_predictor('./models/shape_predictor_68_face_landmarks.dat')
 
 
 '''定义一个函数get_center，用于计算人脸关键点的中心位置。
@@ -18,7 +18,7 @@ landmark_predictor = dlib.shape_predictor('pip./models/shape_predictor_68_face_l
 计算shape数组的第二列（y坐标）的平均值，四舍五入，然后减去25，得到center_y。
 返回center_x和center_y的元组。
 '''
-def get_center(shape):
+def get_center(shape):#计算关键点群的中心坐标
     center_x = int(round(np.sum(shape[:, 0]) / 68))
     center_y = int(round(np.sum(shape[:, 1]) / 68)) - 25
     return center_x, center_y
@@ -47,11 +47,10 @@ def crop_face(vc, norm_x, norm_y, vid_writer, crop_size=224):
 
     `[[(x1, y1) (x2, y2)], [(x3, y3) (x4, y4)]]`
 
-    其中，(x1, y1)和(x2, y2)是第一个人脸的左上角和右下角的坐标，(x3, y3)和(x4, y4)是第二个人脸的左上角和右下角的坐标。你可以参考[这篇文章](^1^)了解更多关于dlib.rectangle对象的用法。
-
+    其中，(x1, y1)和(x2, y2)是第一个人脸的左上角和右下角的坐标，(x3, y3)和(x4, y4)是第二个人脸的左上角和右下角的坐标。
     '''
     while True:
-        bgr_img = vc.read()[1]
+        bgr_img = vc.read()[1]#vc.read()[0]返回的是TURE OR FALSE
         if bgr_img is None:
             break
         rgb_img = cv2.cvtColor(bgr_img, cv2.COLOR_BGR2RGB)
