@@ -1,4 +1,7 @@
 import csv
+import os
+from os.path import basename, splitext
+
 import yt_dlp
 
 
@@ -14,24 +17,29 @@ class VidInfo:
         return f'{self.id},{self.start},{self.end}, {self.face_x},{self.face_y}'
 
 
+# 记录下载成功视频id
+def download_callback(d):
+    if d['status'] == 'finished':
+        with open('../data/train.txt', 'a') as f:
+            f.write(splitext(basename(d['filename']))[0] + '\n')
+
+
 if __name__ == '__main__':
     vidInfos = {}
-    with open('../data/avspeech_train.csv', 'r') as f:
+    with open('../avspeech_train.csv', 'r') as f:
         reader = csv.reader(f)
         for i, row in enumerate(reader):
-            if i > 2:
+            if i > 1:
                 break
             vi = VidInfo(*row)
             vidInfos[vi.id] = vi
 
     URLS = [f'https://www.youtube.com/watch?v={vi.id}' for vi in vidInfos.values()]
 
-    data_dir = '../data/avspeech/train'
+    data_dir = '../data/train'
 
 
     def download_range_callback(info, ydl):
-        print(info['id'])
-
         return [{
             'start_time': vidInfos[info['id']].start,
             'end_time': vidInfos[info['id']].end
@@ -44,8 +52,11 @@ if __name__ == '__main__':
         # 'simulate': True,
         'ignoreerrors': True,
         'download_ranges': download_range_callback,
+        'progress_hooks': [download_callback],
         'proxy': 'http://127.0.0.1:10809'
     }
 
+    os.remove('../data/train.txt')
+
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-        er = ydl.download(URLS)
+        ydl.download(URLS)

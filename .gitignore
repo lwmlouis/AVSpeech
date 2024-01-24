@@ -10,3 +10,5 @@ exception
 
 *.xml
 *.iml
+
+**/*.txt
