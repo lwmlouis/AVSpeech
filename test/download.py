@@ -1,29 +1,19 @@
-from pandas import read_csv
-from os.path import basename, splitext
-
 import yt_dlp
-
-
-# 记录下载成功视频id
-def download_callback(d):
-    if d['status'] == 'finished':
-        with open('../data/train.txt', 'a') as f:
-            f.write(splitext(basename(d['filename']))[0] + '\n')
-
+from pandas import read_csv
 
 if __name__ == '__main__':
-    df = read_csv('../avspeech_train.csv', header=None, names=['id', 'start_time', 'end_time', 'x', 'y'],
+    df = read_csv('./test.csv', header=None, names=['id', 'start_time', 'end_time', 'x', 'y'],
                   index_col='id')
 
     data_dir = '.'
 
     ydl_opts = {
         'format': 'best[ext=mp4]',
-        'outtmpl': f'{data_dir}/%(id)s/%(autonumber)d.%(ext)s',
+        'outtmpl': f'{data_dir}/%(id)s/%(section_start)d_%(section_end)d.%(ext)s',
         # 'simulate': True,
         'ignoreerrors': True,
         'download_ranges': lambda info, _: df.loc[[info['id']], ['start_time', 'end_time']].to_dict('records'),
-        'proxy': 'http://127.0.0.1:10809'
+        'proxy': 'http://127.0.0.1:13957'
     }
 
     grouped = df.groupby('id')
